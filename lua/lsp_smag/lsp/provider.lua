@@ -28,7 +28,7 @@ end
 local function get_locations_from_all_clients(method)
     local buffer_number = api.nvim_get_current_buf()
     local parameter = lsp.util.make_position_params()
-    local buffer_clients = lsp.buf_get_clients(buffer_number)
+    local buffer_clients = lsp.get_clients()
     local all_locations = {}
 
     for _, client in ipairs(buffer_clients) do
