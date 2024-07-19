@@ -6,6 +6,8 @@ local list_utils = require "lsp_smag.utils.lists"
 local lsp_methods = require "lsp_smag.lsp.methods"
 local lsp_server_capabilities = require "lsp_smag.lsp.server_capabilities"
 local tag_kinds = require "lsp_smag.tags.kinds"
+local log = require "lsp_smag.utils.log"
+local debug = require "debug"
 
 local function get_word_under_cursor()
     return api.nvim_call_function("expand", {"<cword>"})
@@ -13,6 +15,7 @@ end
 
 local function get_locations_from_client(client, method, parameter, buffer_number)
     if not client.supports_method(method) then
+        log.log2file("client " .. client.name .. " does not support method " .. method)
         return {}
     end
 
@@ -21,6 +24,7 @@ local function get_locations_from_client(client, method, parameter, buffer_numbe
     if response ~= nil and response.result ~= nil then
       return response.result
     else
+        log.log2file("request_sync response is nil")
       return {}
     end
 end
@@ -29,6 +33,9 @@ local function get_locations_from_all_clients(method)
     local buffer_number = api.nvim_get_current_buf()
     local parameter = lsp.util.make_position_params()
     local buffer_clients = lsp.get_clients()
+    if #buffer_clients == 0 then
+		log.log2file("buffer_clients is empty")
+	end
     local all_locations = {}
 
     for _, client in ipairs(buffer_clients) do
