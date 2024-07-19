@@ -15,7 +15,7 @@ end
 
 local function get_locations_from_client(client, method, parameter, buffer_number)
     if not client.supports_method(method) then
-        log.log2file("client " .. client.name .. " does not support method " .. method)
+        -- log.log2file("client " .. client.name .. " does not support method " .. method)
         return {}
     end
 
@@ -34,8 +34,9 @@ local function get_locations_from_all_clients(method)
     local parameter = lsp.util.make_position_params()
     local buffer_clients = lsp.get_clients()
     if #buffer_clients == 0 then
-		log.log2file("buffer_clients is empty")
-	end
+	log.log2file("buffer_clients is empty")
+	vim.cmd('LspStart')
+    end
     local all_locations = {}
 
     for _, client in ipairs(buffer_clients) do
